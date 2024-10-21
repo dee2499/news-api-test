@@ -48,8 +48,8 @@ This API aggregates articles from the following sources:
 ## Installation
 ### Clone the Repository
 ```bash
-git clone https://github.com/dee2499/news-test.git
-cd news-aggregator-api
+git clone https://github.com/dee2499/news-api-test.git
+cd news-api-test
 ```
 
 ### Install Dependencies
