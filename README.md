@@ -79,6 +79,12 @@ If you have seeders set up, run:
 php artisan db:seed
 ```
 
+### Fetch articles using laravel scheduler ( can set it as per need, currently set to hourly)
+To fetch articles from API, run:
+```bash
+php artisan fetch:articles
+```
+
 ## Docker Setup
 To run the application in a Docker container, ensure you have Docker and Docker Compose installed.
 
