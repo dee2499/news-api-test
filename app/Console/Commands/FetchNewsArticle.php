@@ -12,14 +12,16 @@ class FetchNewsArticle extends Command
     protected $signature = 'fetch:articles';
     protected $description = 'Fetch articles from news APIs and store them in the database';
 
-    protected $newsApis = [
-        'https://newsapi.org/v2/top-headlines?country=us&apiKey=47bbd6927ee6423db9bac3e109c0269c',
-        'https://content.guardianapis.com/search?api-key=b9362210-cfa4-4942-9c68-1cc805d9770c',
-        'https://api.nytimes.com/svc/topstories/v2/home.json?api-key=lMWKf8LAFd0XGC0DTGIT8HFyNuiE5fGV',
-    ];
+    protected $newsApis;
 
     public function handle()
     {
+        $this->newsApis = [
+            'https://newsapi.org/v2/top-headlines?country=us&apiKey=' . env('NEWS_API_KEY'),
+            'https://content.guardianapis.com/search?api-key=' . env('GUARDIAN_API_KEY'),
+            'https://api.nytimes.com/svc/topstories/v2/home.json?api-key=' . env('NYTIMES_API_KEY'),
+        ];
+
         foreach ($this->newsApis as $apiUrl) {
             $this->fetchAndStoreArticles($apiUrl);
         }

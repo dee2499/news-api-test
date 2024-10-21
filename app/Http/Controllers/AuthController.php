@@ -158,20 +158,36 @@ class AuthController extends Controller
      *     @OA\Response(response=422, description="Validation errors")
      * )
      */
+
     public function resetPassword(Request $request)
     {
-        $this->validateRequest($request, 'reset-password');
+
+        $this->validate($request, [
+            'email' => 'required|email',
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
 
         $user = User::where('email', $request->email)->first();
+
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect'], 400);
+        }
+
+
         $user->update(['password' => Hash::make($request->password)]);
+
 
         return response()->json(['message' => 'Password reset successfully']);
     }
+
 
     /**
      * Validate incoming request based on action.

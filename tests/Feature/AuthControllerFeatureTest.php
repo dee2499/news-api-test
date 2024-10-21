@@ -100,20 +100,25 @@ class AuthControllerFeatureTest extends TestCase
 
     public function testUserCanResetPassword()
     {
+
         $user = User::create([
             'name' => 'John Doe',
             'email' => 'johndoe@example.com',
             'password' => bcrypt('password123'),
         ]);
 
+
         $response = $this->postJson('/api/password/reset', [
             'email' => 'johndoe@example.com',
+            'current_password' => 'password123',
             'password' => 'newpassword123',
             'password_confirmation' => 'newpassword123',
         ]);
 
+
         $response->assertStatus(200)
             ->assertJson(['message' => 'Password reset successfully']);
+
 
         $this->assertTrue(Hash::check('newpassword123', $user->fresh()->password));
     }
@@ -122,6 +127,7 @@ class AuthControllerFeatureTest extends TestCase
     {
         $response = $this->postJson('/api/password/reset', [
             'email' => 'nonexistent@example.com',
+            'current_password' => 'password123',
             'password' => 'newpassword123',
             'password_confirmation' => 'newpassword123',
         ]);

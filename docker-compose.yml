@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build:
@@ -7,12 +9,20 @@ services:
     restart: unless-stopped
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
+      - DB_HOST=db
+      - DB_DATABASE=news_aggregator
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
     volumes:
       - ./:/var/www/html
     ports:
       - "8000:80"
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]  # Check the internal port (80)
+      interval: 30s
+      retries: 3
 
   db:
     image: mysql:8.0
@@ -21,8 +31,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: news_aggregator
-      MYSQL_USER: root
-      MYSQL_PASSWORD: secret
+
     volumes:
       - dbdata:/var/lib/mysql
     ports:

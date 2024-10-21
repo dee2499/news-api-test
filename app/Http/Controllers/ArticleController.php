@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -87,7 +88,7 @@ class ArticleController extends Controller
 
     public function index(Request $request)
     {
-        try {
+        /*try {
             $cacheKey = 'articles_' . md5($request->fullUrl());
 
             $articles = Cache::remember($cacheKey, 60, function () use ($request) {
@@ -95,6 +96,18 @@ class ArticleController extends Controller
             });
 
             return response()->json($articles);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch articles'], 500);
+        }*/
+
+        try {
+            $cacheKey = 'articles_' . md5($request->fullUrl());
+
+            $articles = Cache::remember($cacheKey, 60, function () use ($request) {
+                return $this->filterArticles($request)->paginate(10);
+            });
+
+            return ArticleResource::collection($articles);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch articles'], 500);
         }
